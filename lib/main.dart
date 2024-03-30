@@ -6,8 +6,6 @@ void main() {
   runApp( const MaterialApp(home: MyApp(),debugShowCheckedModeBanner: false,));
 
 }
-git init
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
