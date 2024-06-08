@@ -2,16 +2,17 @@ import 'package:calculator_app/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
-class homescreen extends StatefulWidget {
-  const homescreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<homescreen> createState() => _homescreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _homescreenState extends State<homescreen> {
+class _HomeScreenState extends State<HomeScreen> {
   var userInput = '';
   var result = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,29 +23,30 @@ class _homescreenState extends State<homescreen> {
           child: Column(
             children: [
               Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        userInput.toString(),
-                        style: TextStyle(fontSize: 25, color: Colors.white),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        result.toString(),
-                        style: TextStyle(fontSize: 30, color: Colors.white),
-                      ),
-                    ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          userInput.toString(),
+                          style: const TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          result.toString(),
+                          style: const TextStyle(fontSize: 30, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              )),
+              ),
               Expanded(
                 flex: 2,
                 child: Column(
@@ -64,7 +66,7 @@ class _homescreenState extends State<homescreen> {
                             MYButton(
                               title: '+/-',
                               onPress: () {
-                                userInput += '+/-';
+                                toggleSign();
                                 setState(() {});
                               },
                             ),
@@ -77,7 +79,7 @@ class _homescreenState extends State<homescreen> {
                             ),
                             MYButton(
                                 title: '/',
-                                color: Color(0xffffa00a),
+                                color: const Color(0xffffa00a),
                                 onPress: () {
                                   userInput += '/';
                                   setState(() {});
@@ -108,7 +110,7 @@ class _homescreenState extends State<homescreen> {
                                 }),
                             MYButton(
                                 title: 'x',
-                                color: Color(0xffffa00a),
+                                color: const Color(0xffffa00a),
                                 onPress: () {
                                   userInput += 'x';
                                   setState(() {});
@@ -139,7 +141,7 @@ class _homescreenState extends State<homescreen> {
                                 }),
                             MYButton(
                                 title: '-',
-                                color: Color(0xffffa00a),
+                                color: const Color(0xffffa00a),
                                 onPress: () {
                                   userInput += '-';
                                   setState(() {});
@@ -170,7 +172,7 @@ class _homescreenState extends State<homescreen> {
                                 }),
                             MYButton(
                                 title: '+',
-                                color: Color(0xffffa00a),
+                                color: const Color(0xffffa00a),
                                 onPress: () {
                                   userInput += '+';
                                   setState(() {});
@@ -196,13 +198,12 @@ class _homescreenState extends State<homescreen> {
                             MYButton(
                                 title: 'DEL',
                                 onPress: () {
-                                  userInput = userInput.substring(
-                                      0, userInput.length - 1);
+                                  userInput = userInput.substring(0, userInput.length - 1);
                                   setState(() {});
                                 }),
                             MYButton(
                                 title: '=',
-                                color: Color(0xffffa00a),
+                                color: const Color(0xffffa00a),
                                 onPress: () {
                                   equalPress();
                                   setState(() {});
@@ -222,11 +223,25 @@ class _homescreenState extends State<homescreen> {
   }
 
   void equalPress() {
-    String finalInput = userInput;
-    userInput = userInput.replaceAll('x', '*');
-    Parser p = Parser();
-    Expression expression = p.parse(userInput);
-    ContextModel contextModel = ContextModel();
-    double eval = expression.evaluate(EvaluationType.REAL, contextModel);
+    try {
+      String finalInput = userInput.replaceAll('x', '*');
+      Parser p = Parser();
+      Expression expression = p.parse(finalInput);
+      ContextModel contextModel = ContextModel();
+      double eval = expression.evaluate(EvaluationType.REAL, contextModel);
+      result = eval.toString();
+    } catch (e) {
+      result = 'Error';
+    }
+  }
+
+  void toggleSign() {
+    if (userInput.isNotEmpty) {
+      if (userInput.startsWith('-')) {
+        userInput = userInput.substring(1);
+      } else {
+        userInput = '-$userInput';
+      }
+    }
   }
 }
